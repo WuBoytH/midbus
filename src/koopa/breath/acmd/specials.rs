@@ -6,12 +6,10 @@ use {
         lib::lua_const::*
     },
     smash_script::*,
-    smashline::*,
     super::super::MIDBUS_SLOTS
 };
 
-#[acmd_script( agent = "koopa_breath", script = "game_move", category = ACMD_GAME )]
-unsafe fn koopa_breath_move(weapon: &mut L2CAgentBase) {
+unsafe extern "C" fn koopa_breath_move(weapon: &mut L2CAgentBase) {
     let owner_id = WorkModule::get_int(weapon.module_accessor, *WEAPON_INSTANCE_WORK_ID_INT_LINK_OWNER) as u32;
     let owner_boma = sv_battle_object::module_accessor(owner_id);
     let owner_color = WorkModule::get_int(owner_boma, *FIGHTER_INSTANCE_WORK_ID_INT_COLOR);
@@ -39,8 +37,6 @@ unsafe fn koopa_breath_move(weapon: &mut L2CAgentBase) {
     }
 }
 
-pub fn install() {
-    install_acmd_scripts!(
-        koopa_breath_move
-    );
+pub fn install(agent: &mut smashline::Agent) {
+    agent.game_acmd("game_move", koopa_breath_move);
 }

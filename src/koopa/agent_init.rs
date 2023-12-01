@@ -1,27 +1,13 @@
 use {
-    smash::{
-        lua2cpp::L2CFighterCommon,
-        app::*,
-        lib::lua_const::*
-    },
-    smashline::*,
+    smash::lua2cpp::L2CFighterCommon,
     once_cell::sync::Lazy,
     super::MIDBUS_SLOTS
 };
 
-#[fighter_reset]
-fn agent_reset(fighter: &mut L2CFighterCommon) {
-    unsafe {
-        let fighter_kind = utility::get_kind(&mut *fighter.module_accessor);
-        if fighter_kind != *FIGHTER_KIND_KOOPA {
-            return;
-        }
-        Lazy::force(&MIDBUS_SLOTS);
-    }
+unsafe extern "C" fn on_start(_fighter: &mut L2CFighterCommon) {
+    Lazy::force(&MIDBUS_SLOTS);
 }
 
-pub fn install() {
-    install_agent_resets!(
-        agent_reset
-    );
+pub fn install(agent: &mut smashline::Agent) {
+    agent.on_start(on_start);
 }

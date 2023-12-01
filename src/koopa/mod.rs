@@ -4,8 +4,9 @@ use {
     walkdir::*
 };
 
-mod acmd;
 mod agent_init;
+
+mod breath;
 
 pub static MIDBUS_SLOTS: Lazy<HashSet<i32>> = Lazy::new(|| {
     let mut vec = HashSet::new();
@@ -20,6 +21,9 @@ pub static MIDBUS_SLOTS: Lazy<HashSet<i32>> = Lazy::new(|| {
 });
 
 pub fn install() {
-    acmd::install();
-    agent_init::install();
+    let agent = &mut smashline::Agent::new("koopa_breath");
+    agent_init::install(agent);
+    agent.install();
+
+    breath::install();
 }
